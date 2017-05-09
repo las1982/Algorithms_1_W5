@@ -16,10 +16,10 @@ public class KdTree {
         private int sz;
 
         public Node(Point2D p, boolean vertical, RectHV rect) {
-            this.p = p;
-            this.vertical = vertical;
-            this.rect = rect;
-            this.sz = 1;
+            p = p;
+            vertical = vertical;
+            rect = rect;
+            sz = 1;
         }
     }
 
@@ -28,18 +28,18 @@ public class KdTree {
     }
 
     public boolean isEmpty() {
-        return this.root == null;
+        return root == null;
     }
 
     public int size() {
-        return this.size(this.root);
+        return size(root);
     }
 
     public void insert(Point2D p) {
         if (p == null)
             throw new NullPointerException();
 
-        this.root = this.insert(this.root, p, true, 0, 0, 1, 1);
+        root = insert(root, p, true, 0, 0, 1, 1);
     }
 
     private Node insert(Node cur, Point2D p, boolean vertical, double l, double b, double r, double t) {
@@ -51,22 +51,22 @@ public class KdTree {
 
         if (vertical) {
             if (p.x() < cur.p.x()) {
-                cur.left = this.insert(cur.left, p, !vertical,
+                cur.left = insert(cur.left, p, !vertical,
                         cur.rect.xmin(), cur.rect.ymin(), cur.p.x(), cur.rect.ymax());
             } else
-                cur.right = this.insert(cur.right, p, !vertical,
+                cur.right = insert(cur.right, p, !vertical,
                         cur.p.x(), cur.rect.ymin(), cur.rect.xmax(), cur.rect.ymax());
         } else {
             if (p.y() < cur.p.y())
-                cur.left = this.insert(cur.left, p, !vertical,
+                cur.left = insert(cur.left, p, !vertical,
                         cur.rect.xmin(), cur.rect.ymin(), cur.rect.xmax(), cur.p.y());
             else
-                cur.right = this.insert(cur.right, p, !vertical,
+                cur.right = insert(cur.right, p, !vertical,
                         cur.rect.xmin(), cur.p.y(), cur.rect.xmax(), cur.rect.ymax());
 
         }
 
-        cur.sz = 1 + this.size(cur.left) + this.size(cur.right);
+        cur.sz = 1 + size(cur.left) + size(cur.right);
         return cur;
     }
 
@@ -81,12 +81,12 @@ public class KdTree {
         if (p == null)
             throw new NullPointerException();
 
-        Node ret = this.search(p);
+        Node ret = search(p);
         return ret != null;
     }
 
     private Node search(Point2D p) {
-        Node cur = this.root;
+        Node cur = root;
         while (true) {
             if (cur == null || cur.p.equals(p))
                 return cur;
@@ -106,7 +106,7 @@ public class KdTree {
     }
 
     public void draw() {
-        this.draw(this.root);
+        draw(root);
     }
 
     private void draw(Node cur) {
@@ -119,15 +119,15 @@ public class KdTree {
         else
             StdDraw.line(cur.rect.xmin(), cur.p.y(), cur.rect.xmax(), cur.p.y());
 
-        this.draw(cur.left);
-        this.draw(cur.right);
+        draw(cur.left);
+        draw(cur.right);
     }
 
     public Iterable<Point2D> range(RectHV rect) {
         if (rect == null)
             throw new NullPointerException();
         List<Point2D> ret = new ArrayList<Point2D>();
-        this.range(this.root, rect, ret);
+        range(root, rect, ret);
         return ret;
     }
 
@@ -141,8 +141,8 @@ public class KdTree {
         if (rect.contains(cur.p))
             ret.add(cur.p);
 
-        this.range(cur.left, rect, ret);
-        this.range(cur.right, rect, ret);
+        range(cur.left, rect, ret);
+        range(cur.right, rect, ret);
     }
 
     public Point2D nearest(Point2D p) {
@@ -150,7 +150,7 @@ public class KdTree {
             throw new NullPointerException();
 
         Point2D[] ret = new Point2D[]{null};
-        this.nearest(this.root, p, ret);
+        nearest(root, p, ret);
         return ret[0];
     }
 
@@ -169,7 +169,7 @@ public class KdTree {
         }
         for (Node c : children)
             if (c != null && c.rect.distanceSquaredTo(p) < ret[0].distanceSquaredTo(p))
-                this.nearest(c, p, ret);
+                nearest(c, p, ret);
     }
 
     public static void main(String[] args) {
