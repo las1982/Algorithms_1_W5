@@ -22,33 +22,19 @@ public class KdTree {
             this.sz = 1;
         }
     }
-    /**
-     * construct an empty set of points
-     */
+
     public KdTree() {
 
     }
 
-    /**
-     * is the set empty?
-     * @return
-     */
     public boolean isEmpty() {
         return this.root == null;
     }
 
-    /**
-     * number of points in the set
-     * @return
-     */
     public int size() {
         return this.size(this.root);
     }
 
-    /**
-     * add the point to the set (if it is not already in the set)
-     * @param p
-     */
     public void insert(Point2D p) {
         if (p == null)
             throw new NullPointerException();
@@ -67,12 +53,10 @@ public class KdTree {
             if (p.x() < cur.p.x()) {
                 cur.left = this.insert(cur.left, p, !vertical,
                         cur.rect.xmin(), cur.rect.ymin(), cur.p.x(), cur.rect.ymax());
-            }
-            else
+            } else
                 cur.right = this.insert(cur.right, p, !vertical,
                         cur.p.x(), cur.rect.ymin(), cur.rect.xmax(), cur.rect.ymax());
-        }
-        else {
+        } else {
             if (p.y() < cur.p.y())
                 cur.left = this.insert(cur.left, p, !vertical,
                         cur.rect.xmin(), cur.rect.ymin(), cur.rect.xmax(), cur.p.y());
@@ -82,7 +66,7 @@ public class KdTree {
 
         }
 
-        cur.sz = 1+this.size(cur.left)+this.size(cur.right);
+        cur.sz = 1 + this.size(cur.left) + this.size(cur.right);
         return cur;
     }
 
@@ -93,11 +77,6 @@ public class KdTree {
             return cur.sz;
     }
 
-    /**
-     * does the set contain point p?
-     * @param p
-     * @return
-     */
     public boolean contains(Point2D p) {
         if (p == null)
             throw new NullPointerException();
@@ -117,8 +96,7 @@ public class KdTree {
                     cur = cur.left;
                 else
                     cur = cur.right;
-            }
-            else {
+            } else {
                 if (p.y() < cur.p.y())
                     cur = cur.left;
                 else
@@ -127,9 +105,6 @@ public class KdTree {
         }
     }
 
-    /**
-     * draw all points to standard draw
-     */
     public void draw() {
         this.draw(this.root);
     }
@@ -148,22 +123,15 @@ public class KdTree {
         this.draw(cur.right);
     }
 
-    /**
-     * all points that are inside the rectangle
-     * @param rect
-     * @return
-     */
     public Iterable<Point2D> range(RectHV rect) {
         if (rect == null)
             throw new NullPointerException();
-
         List<Point2D> ret = new ArrayList<Point2D>();
         this.range(this.root, rect, ret);
         return ret;
     }
 
     private void range(Node cur, RectHV rect, List<Point2D> ret) {
-        // post check
         if (cur == null)
             return;
 
@@ -177,11 +145,6 @@ public class KdTree {
         this.range(cur.right, rect, ret);
     }
 
-    /**
-     * a nearest neighbor in the set to point p; null if the set is empty
-     * @param p
-     * @return
-     */
     public Point2D nearest(Point2D p) {
         if (p == null)
             throw new NullPointerException();
@@ -192,7 +155,6 @@ public class KdTree {
     }
 
     private void nearest(Node cur, Point2D p, Point2D[] ret) {
-        // post check;
         if (cur == null)
             return;
 
@@ -205,15 +167,11 @@ public class KdTree {
             children[0] = cur.right;
             children[1] = cur.left;
         }
-        for (Node c: children)
+        for (Node c : children)
             if (c != null && c.rect.distanceSquaredTo(p) < ret[0].distanceSquaredTo(p))
                 this.nearest(c, p, ret);
     }
 
-    /**
-     * unit testing of the methods (optional)
-     * @param args
-     */
     public static void main(String[] args) {
 
     }
