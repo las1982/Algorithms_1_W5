@@ -2,7 +2,6 @@ import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +13,13 @@ public class KdTree {
         private Node left, right;
         private boolean vertical;
         private RectHV rect;
-        private int sz;
+        private int size;
 
         public Node(Point2D p, boolean vertical, RectHV rect) {
-            p = p;
-            vertical = vertical;
-            rect = rect;
-            sz = 1;
+            this.p = p;
+            this.vertical = vertical;
+            this.rect = rect;
+            size = 1;
         }
     }
 
@@ -36,46 +35,46 @@ public class KdTree {
         return size(root);
     }
 
+    private int size(Node cur) {
+        if (cur == null)
+            return 0;
+        else
+            return cur.size;
+    }
+
     public void insert(Point2D p) {
         if (p == null)
             throw new NullPointerException();
-
         root = insert(root, p, true, 0, 0, 1, 1);
     }
 
-    private Node insert(Node cur, Point2D p, boolean vertical, double l, double b, double r, double t) {
+    private Node insert(Node cur, Point2D p, boolean vertical, double xmin, double ymin, double xmax, double ymax) {
         if (cur == null)
-            cur = new Node(p, vertical, new RectHV(l, b, r, t));
-
-        if (cur.p.equals(p))
-            return cur;
+            cur = new Node(p, vertical, new RectHV(xmin, ymin, xmax, ymax));
+        if (cur.p.equals(p)) return cur;
 
         if (vertical) {
             if (p.x() < cur.p.x()) {
                 cur.left = insert(cur.left, p, !vertical,
                         cur.rect.xmin(), cur.rect.ymin(), cur.p.x(), cur.rect.ymax());
+//                cur.left = new Node(p, !vertical, new RectHV(cur.rect.xmin(), cur.rect.ymin(), cur.p.x(), cur.rect.ymax()));
             } else
                 cur.right = insert(cur.right, p, !vertical,
                         cur.p.x(), cur.rect.ymin(), cur.rect.xmax(), cur.rect.ymax());
+//                cur.right = new Node(p, !vertical, new RectHV(cur.p.x(), cur.rect.ymin(), cur.rect.xmax(), cur.rect.ymax()));
         } else {
             if (p.y() < cur.p.y())
                 cur.left = insert(cur.left, p, !vertical,
                         cur.rect.xmin(), cur.rect.ymin(), cur.rect.xmax(), cur.p.y());
+//                cur.left = new Node(p, !vertical, new RectHV(cur.rect.xmin(), cur.rect.ymin(), cur.rect.xmax(), cur.p.y()));
             else
                 cur.right = insert(cur.right, p, !vertical,
                         cur.rect.xmin(), cur.p.y(), cur.rect.xmax(), cur.rect.ymax());
-
+//                cur.right = new Node(p, !vertical, new RectHV(cur.rect.xmin(), cur.p.y(), cur.rect.xmax(), cur.rect.ymax()));
         }
 
-        cur.sz = 1 + size(cur.left) + size(cur.right);
+        cur.size = 1 + size(cur.left) + size(cur.right);
         return cur;
-    }
-
-    private int size(Node cur) {
-        if (cur == null)
-            return 0;
-        else
-            return cur.sz;
     }
 
     public boolean contains(Point2D p) {

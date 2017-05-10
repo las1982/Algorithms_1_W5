@@ -23,7 +23,7 @@ public class NearestNeighborVisualizer {
         if (args.length > 0)
             in = new In(args[0]);
         else
-            in = new In(new File(NearestNeighborVisualizer.class.getClassLoader().getResource("kdtree/circle100.txt").toURI()));
+            in = new In(new File(NearestNeighborVisualizer.class.getClassLoader().getResource("kdtree/input10K.txt").toURI()));
 
         StdDraw.show(0);
 

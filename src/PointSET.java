@@ -3,13 +3,13 @@ import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+//import java.util.List;
+//import java.util.Set;
 import java.util.TreeSet;
 
 
 public class PointSET {
-    private Set<Point2D> set;
+    private TreeSet<Point2D> set;
 
     // construct an empty set of points
     public PointSET() {
@@ -29,7 +29,6 @@ public class PointSET {
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
         set.add(p);
-
     }
 
     // does the set contain point p?
@@ -46,7 +45,7 @@ public class PointSET {
 
     // all points that are inside the rectangle
     public Iterable<Point2D> range(RectHV rect) {
-        List<Point2D> ret = new ArrayList<Point2D>();
+        ArrayList<Point2D> ret = new ArrayList<Point2D>();
         for (Point2D p : set)
             if (rect.contains(p))
                 ret.add(p);
